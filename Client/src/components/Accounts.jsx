@@ -46,7 +46,7 @@ const Accounts = () => {
     <div className="space-y-2">
       <p className="font-medium text-gray-800">{user.name}</p>
       <p className="text-sm text-gray-600">{user.email}</p>
-      <p className="text-sm text-gray-600">+1 - 856-589-093-1236</p>
+      <p className="text-sm text-gray-600">+1 - 856-589</p>
       <button 
         onClick={logout} 
         className="w-full bg-gray-400 py-2 rounded-lg mt-4 hover:text-gray-600 transition-all"

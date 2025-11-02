@@ -6,7 +6,7 @@ import Register from './components/Register';
 import Accounts from './components/Accounts';
 import Booking from './components/Booking';
 import Places from './components/Places';
-import Body from './components/Body';
+import Body from './pages/common/Body';
 import axios from 'axios';
 import PlacePage from './components/PlacePage';
 import AllBooking from './components/AllBooking';

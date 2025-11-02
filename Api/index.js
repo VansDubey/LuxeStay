@@ -79,7 +79,6 @@ app.post('/register', async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: "User already exists" });
@@ -87,56 +86,79 @@ app.post('/register', async (req, res) => {
 
     const hashedPassword = bcrypt.hashSync(password, bcryptsalt);
 
+    // Allow role only if it's valid, default to 'user'
+    const userRole = role === "admin" ? "admin" : "user";
+
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
-      role: role || "user", // default role = user
+      role: userRole,
     });
 
-    res.status(201).json({ message: "User registered successfully", user });
+    res.status(201).json({
+      message: "User registered successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
 
   } catch (error) {
-    res.status(422).json(error);
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
   }
 });
 
+// 🟢 LOGIN ROUTE
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password required" });
+    }
+
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "User not registered yet" });
     }
 
-    const passok = bcrypt.compareSync(password, user.password);
-    if (!passok) {
-      return res.status(400).json({ message: "Password is not correct" });
+    const passOk = bcrypt.compareSync(password, user.password);
+    if (!passOk) {
+      return res.status(400).json({ message: "Incorrect password" });
     }
 
-    // Include role in the JWT
-    jwt.sign(
-      { email: user.email, id: user._id, name: user.name, role: user.role },
+    // Include role in JWT
+    const token = jwt.sign(
+      {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
       jwtSecretKey,
-      { expiresIn: "2h" },
-      (err, token) => {
-        if (err) throw err;
-
-        res
-          .cookie("token", token, {
-            httpOnly: true,
-            secure: false, // set true in production (HTTPS)
-          })
-          .json({
-            message: "Login successful",
-            user: { id: user._id, name: user.name, email: user.email, role: user.role },
-          });
-      }
+      { expiresIn: "2h" }
     );
 
-  } catch (e) {
-    res.status(400).json(e);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // change to true in production (HTTPS)
+    }).json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 

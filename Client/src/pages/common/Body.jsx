@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { UserContext } from '../Usercontext';
-import Image from './Image';
-import MidSec from './Midsec';
-import Footer from './Footer';
-import Preview from './Preview';
+import { UserContext } from '../../Usercontext';
+import Image from '../../components/Image';
+import MidSec from '../../components/Midsec';
+import Footer from '../../components/Footer';
+import Preview from '../../components/Preview';
 import { Moon, User } from "lucide-react";
 
 const Body = () => {

@@ -1,71 +1,80 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { UserContext } from '../../Usercontext';
-import Image from '../../components/Image';
+import React, { useContext, useEffect, useState } from 'react';
+import axios from 'axios';
+import { UserContext } from '../../context/Usercontext';
+import HeroSection from '../../components/HeroSection';
 import MidSec from '../../components/Midsec';
 import Footer from '../../components/Footer';
-import Preview from '../../components/Preview';
-import { Moon, User } from "lucide-react";
+import ListingCard from '../../components/ListingCard';
+import Navbar from '../../components/Navbar';
 
 const Body = () => {
   const { user } = useContext(UserContext);
+  const [places, setPlaces] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch all places (assuming this endpoint exists and returns public places)
+    // If not, we might need to adjust based on backend API capabilities.
+    // Using user-places as fallback if public endpoint fails or is same
+    // But typically for homepage we want ALL places.
+    // Let's try /places first.
+    axios.get('http://localhost:3000/places')
+      .then(response => {
+        setPlaces(response.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch places", err);
+        // Fallback or empty state
+        setLoading(false);
+      });
+  }, []);
 
   return (
-    <>
-      {/* 🌐 Navbar */}
-      <nav className="fixed top-0 left-0 w-full z-50 bg-white/70 backdrop-blur-md shadow-md border-b border-gray-200/30 transition-all duration-300">
-        <div className="max-w-7xl mx-auto px-6 md:px-10 py-3 flex justify-between items-center">
-          
-          {/* Logo Section */}
-          <div className="flex items-center space-x-2">
-            <span className="text-2xl">🏨</span>
-            <Link to="/" className="group">
-              <h1 className="text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">
-                Elegancia
-              </h1>
-              <p className="text-sm text-gray-500 mt-1 italic">More than a stay, an experience.</p>
-            </Link>
-          </div>
-
-          {/* Navigation Links */}
-          <ul className="hidden md:flex space-x-10 text-gray-700 font-medium">
-            <li>
-              <Link to="/" className="hover:text-blue-600 transition-colors duration-200">Home</Link>
-            </li>
-            <li>
-              <Link to="/accounts/book" className="hover:text-blue-600 transition-colors duration-200">Places</Link>
-            </li>
-            <li>
-              <Link to="/accounts/booking" className="hover:text-blue-600 transition-colors duration-200">Bookings</Link>
-            </li>
-            <li>
-              <Link to="/accounts/places" className="hover:text-blue-600 transition-colors duration-200">Accommodations</Link>
-            </li>
-          </ul>
-
-          {/* Action Buttons */}
-          <div className="flex items-center space-x-4">
-            <button className="p-2 rounded-full hover:bg-blue-50 hover:text-blue-600 transition">
-              <Moon size={20} />
-            </button>
-            <Link
-              to={user ? "/accounts/profile" : "/Login"}
-              className="p-2 rounded-full hover:bg-blue-50 hover:text-blue-600 transition"
-            >
-              <User size={20} />
-            </Link>
-          </div>
-        </div>
-      </nav>
+    <div className="bg-secondary-50 min-h-screen flex flex-col">
+      <Navbar /> {/* Ensure Navbar is here if not in Layout */}
 
       {/* 🔽 Page Content */}
-      <div className="pt-[80px] scroll-smooth">
-        <Image />
-        <Preview />
+      <div className="flex-grow pt-0"> {/* Removed pt-[80px] because Hero handles it or is full screen */}
+
+        <HeroSection />
+
+        <div className="max-w-7xl mx-auto px-6 md:px-10 py-16">
+          <div className="flex justify-between items-end mb-8">
+            <div>
+              <h2 className="text-3xl font-serif font-bold text-secondary-900">Featured Places</h2>
+              <p className="text-secondary-500 mt-2">Handpicked selections for your next adventure</p>
+            </div>
+            {/* <Link to="/all-places" className="text-primary-500 font-medium hover:underline">View all</Link> */}
+          </div>
+
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[1, 2, 3, 4].map((n) => (
+                <div key={n} className="animate-pulse">
+                  <div className="bg-secondary-200 aspect-[4/3] rounded-2xl mb-3"></div>
+                  <div className="h-4 bg-secondary-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-4 bg-secondary-200 rounded w-1/2"></div>
+                </div>
+              ))}
+            </div>
+          ) : places.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {places.map(place => (
+                <ListingCard key={place._id} place={place} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-secondary-300">
+              <p className="text-secondary-400 text-lg">No places found. Be the first to add one!</p>
+            </div>
+          )}
+        </div>
+
         <MidSec />
-        <Footer />
       </div>
-    </>
+      <Footer />
+    </div>
   );
 };
 

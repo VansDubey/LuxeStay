@@ -1,71 +1,92 @@
 import React from 'react';
+import { Facebook, Instagram, Twitter, Youtube, Globe } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-100  flex flex-col md:flex-row justify-around flex-wrap">
-      <div className="w-full md:w-auto mb-8 md:mb-0 p-12"> {/* Logo and Description */}
-        <div className="flex items-center mb-4">
-          {/* <img src="your_logo.png" alt="Your Logo" className="h-12 mr-2" /> Adjust height as needed */}
-          <span className="text-xl font-bold">YourHouseRentals.com</span>
+    <footer className="bg-secondary-50 border-t border-secondary-200 mt-16">
+      <div className="max-w-7xl mx-auto px-6 md:px-10 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
+
+        {/* Brand Column */}
+        <div className="space-y-4">
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="bg-primary-500 rounded-lg p-1.5 text-white">
+              <Globe size={20} strokeWidth={2.5} />
+            </div>
+            <span className="text-xl font-bold text-secondary-900 group-hover:text-primary-600 transition-colors">
+              LuxeStay
+            </span>
+          </Link>
+          <p className="text-secondary-500 text-sm leading-relaxed">
+            Discover the most luxurious and unique stays around the world. Experience comfort like never before.
+          </p>
+          <div className="flex gap-4 pt-2">
+            <a href="#" className="text-secondary-400 hover:text-primary-500 transition-colors">
+              <Facebook size={20} />
+            </a>
+            <a href="#" className="text-secondary-400 hover:text-primary-500 transition-colors">
+              <Instagram size={20} />
+            </a>
+            <a href="#" className="text-secondary-400 hover:text-primary-500 transition-colors">
+              <Twitter size={20} />
+            </a>
+            <a href="#" className="text-secondary-400 hover:text-primary-500 transition-colors">
+              <Youtube size={20} />
+            </a>
+          </div>
         </div>
-        <p className="text-gray-600 mb-4">Making finding your perfect home easier than ever.</p>
-        <div className="flex"> {/* Social Icons */}
-            <a href="#" className="text-gray-500 hover:text-gray-700 mr-4">
-                <i className="fab fa-facebook fa-lg"></i> {/* Example: Facebook */}
-            </a>
-            <a href="#" className="text-gray-500 hover:text-gray-700 mr-4">
-                <i className="fab fa-instagram fa-lg"></i>
-            </a>
-            <a href="#" className="text-gray-500 hover:text-gray-700 mr-4">
-                <i className="fab fa-twitter fa-lg"></i>
-            </a>
-            <a href="#" className="text-gray-500 hover:text-gray-700">
-                <i className="fab fa-youtube fa-lg"></i>
-            </a>
+
+        {/* Links Column */}
+        <div>
+          <h3 className="font-semibold text-secondary-900 mb-4">Discover</h3>
+          <ul className="space-y-3 text-secondary-500 text-sm">
+            <li><Link to="/accounts/book" className="hover:text-primary-500 transition-colors">Apartments</Link></li>
+            <li><Link to="/accounts/book" className="hover:text-primary-500 transition-colors">Luxury Villas</Link></li>
+            <li><Link to="/accounts/book" className="hover:text-primary-500 transition-colors">Beach Houses</Link></li>
+            <li><Link to="/accounts/book" className="hover:text-primary-500 transition-colors">Trending</Link></li>
+          </ul>
         </div>
+
+        {/* Links Column */}
+        <div>
+          <h3 className="font-semibold text-secondary-900 mb-4">Support</h3>
+          <ul className="space-y-3 text-secondary-500 text-sm">
+            <li><Link to="/" className="hover:text-primary-500 transition-colors">Help Center</Link></li>
+            <li><Link to="/" className="hover:text-primary-500 transition-colors">Safety Information</Link></li>
+            <li><Link to="/" className="hover:text-primary-500 transition-colors">Cancellation Options</Link></li>
+            <li><Link to="/" className="hover:text-primary-500 transition-colors">Contact Us</Link></li>
+          </ul>
+        </div>
+
+        {/* Newsletter Column (Optional enhancement) */}
+        <div>
+          <h3 className="font-semibold text-secondary-900 mb-4">Stay Clean</h3>
+          <p className="text-secondary-500 text-sm mb-4">Subscribe to get special offers and updates.</p>
+          <div className="flex gap-2">
+            <input
+              type="email"
+              placeholder="Email address"
+              className="flex-1 bg-white border border-secondary-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary-500"
+            />
+            <button className="bg-primary-500 hover:bg-primary-600 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors">
+              Join
+            </button>
+          </div>
+        </div>
+
       </div>
 
-      <div className="w-full md:w-auto mb-8 md:mb-0"> {/* Rentals */}
-        <h3 className="font-semibold text-gray-700 mb-2">Rentals</h3>
-        <ul className="text-gray-500">
-          <li className="mb-1"><a href="#" className="hover:text-blue-500">Apartments</a></li>
-          <li className="mb-1"><a href="#" className="hover:text-blue-500">Houses</a></li>
-          <li className="mb-1"><a href="#" className="hover:text-blue-500">Villas</a></li>
-          <li><a href="#" className="hover:text-blue-500">Short-Term Stays</a></li>
-        </ul>
-      </div>
-
-      <div className="w-full md:w-auto mb-8 md:mb-0"> {/* Support */}
-        <h3 className="font-semibold text-gray-700 mb-2">Support</h3>
-        <ul className="text-gray-500">
-          <li className="mb-1"><a href="#" className="hover:text-blue-500">Contact Us</a></li>
-          <li className="mb-1"><a href="#" className="hover:text-blue-500">FAQ</a></li>
-          <li className="mb-1"><a href="#" className="hover:text-blue-500">Help Center</a></li>
-          <li><a href="#" className="hover:text-blue-500">Submit a Request</a></li>
-        </ul>
-      </div>
-
-      <div className="w-full md:w-auto mb-8 md:mb-0"> {/* Company */}
-        <h3 className="font-semibold text-gray-700 mb-2">Company</h3>
-        <ul className="text-gray-500">
-          <li className="mb-1"><a href="#" className="hover:text-blue-500">About Us</a></li>
-          <li className="mb-1"><a href="#" className="hover:text-blue-500">Blog</a></li>
-          <li className="mb-1"><a href="#" className="hover:text-blue-500">Careers</a></li>
-          <li><a href="#" className="hover:text-blue-500">Press</a></li>
-        </ul>
-      </div>
-
-      <div className="w-full md:w-auto"> {/* Legal */}
-        <h3 className="font-semibold text-gray-700 mb-2">Legal</h3>
-        <ul className="text-gray-500">
-          <li className="mb-1"><a href="#" className="hover:text-blue-500">Terms of Service</a></li>
-          <li className="mb-1"><a href="#" className="hover:text-blue-500">Privacy Policy</a></li>
-          <li><a href="#" className="hover:text-blue-500">Disclaimer</a></li>
-        </ul>
-      </div>
-
-      <div className="w-[100vw] text-center py-4 bg-gray-200 mt-8 "> {/* Bottom Bar */}
-        &copy; 2024 YourHouseRentals.com. All rights reserved.
+      <div className="border-t border-secondary-200 bg-white">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-secondary-400 text-sm">
+            &copy; 2024 LuxeStay Inc. All rights reserved.
+          </p>
+          <div className="flex gap-6 text-sm text-secondary-500">
+            <a href="#" className="hover:text-secondary-900">Privacy</a>
+            <a href="#" className="hover:text-secondary-900">Terms</a>
+            <a href="#" className="hover:text-secondary-900">Sitemap</a>
+          </div>
+        </div>
       </div>
     </footer>
   );

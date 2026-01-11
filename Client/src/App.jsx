@@ -1,77 +1,94 @@
-import './App.css'
-import {createBrowserRouter} from "react-router-dom";
-import {RouterProvider} from "react-router-dom";
-import Login from './components/Login';
-import Register from './components/Register';
-import Accounts from './components/Accounts';
-import Booking from './components/Booking';
-import Places from './components/Places';
-import Body from './pages/common/Body';
+import './App.css';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import axios from 'axios';
-import PlacePage from './components/PlacePage';
-import AllBooking from './components/AllBooking';
-import SingleBooking from './components/SingleBooking';
-import LuxeStay from './components/new';
-import Navbar from './components/Navbar';
 
-//will do the id one and editing thing at last
-// axios.defaults.baseURL="http://localhost:5173";
-axios.defaults.withCredentials = true;//using this for cookies
+// Context
+import { UserContextProvider } from './context/Usercontext';
+
+// Common Pages
+import Body from './pages/common/Body';
+import Login from './pages/common/Login';
+import Register from './pages/common/Register';
+// import LuxeStay from './pages/common/LuxeStay';
+
+// User Pages
+import Accounts from './pages/user/Accounts';
+import Booking from './pages/user/Booking';
+import Places from './pages/user/Places';
+import PlacePage from './pages/user/PlacePage';
+import AllBooking from './pages/user/AllBooking';
+import SingleBooking from './pages/user/SingleBooking';
+
+// Protected Route
+// import ProtectedRoute from './components/ProtectedRoute';
+
+axios.defaults.withCredentials = true;
+
+// ✅ Define Routes
+const router = createBrowserRouter([
+  // 🌍 Common Routes
+  { path: '/', element: <Body /> },
+  { path: '/login', element: <Login /> },
+  { path: '/register', element: <Register /> },
+  // { path: '/L', element: <LuxeStay /> },
+
+  // 👤 User Routes (Protected)
+  {
+    path: '/accounts/profile',
+    element: (
+      // <ProtectedRoute allowedRoles={['user']}>
+        <Accounts />
+      // </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/accounts/book',
+    element: (
+      // <ProtectedRoute allowedRoles={['user']}>
+        <Booking />
+      /* </ProtectedRoute> */
+    ),
+  },
+  {
+    path: '/accounts/places/:ready?',
+    element: (
+      // <ProtectedRoute allowedRoles={['user']}>
+        <Places />
+      // </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/accounts/booking',
+    element: (
+      // <ProtectedRoute allowedRoles={['user']}>
+        <AllBooking />
+      // </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/accounts/booking/:id',
+    element: (
+      // <ProtectedRoute allowedRoles={['user']}>
+        <SingleBooking />
+      // </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/places/:id',
+    element: (
+    //   <ProtectedRoute allowedRoles={['user']}>
+        <PlacePage />
+      // </ProtectedRoute>
+    ),
+  },
+]);
 
 function App() {
- const router = createBrowserRouter([
-  {
-    path:'/',
-    element:<><Body/></>
-  },
-  {
-    path:'/Login',
-    element:<><Login/></>
-  },
-  {
-    path:'/register',
-    element:<><Register/></>
-  },
-  {
-    path:'/accounts/profile',
-    element:<><Accounts/></>
-  },
-  {
-    path:'/accounts/places/:ready?',
-    element:<><Places/></>
-  },{
-    path:'/accounts/places/:ready/:id?',
-    element:<><Places/></>
-
-  },
-  {
-    path:'/accounts/book',
-    element:<><Booking/></>
-  },
-  {
-    path:'/places/:id',
-    element:<><PlacePage/></>
-  },
-  {
-    path:'/accounts/booking',
-    element:<><AllBooking/></>
-  },
-  {
-    path:'/accounts/booking/:id',
-    element:<><SingleBooking/></>
-  },
-   {
-    path:'/L',
-    element:<><LuxeStay/></>
-  },
-
- ])
-
   return (
-    <>
-     <RouterProvider router={router}/>
-    </>
-  )
+    <UserContextProvider>
+      <RouterProvider router={router} />
+    </UserContextProvider>
+  );
 }
 
-export default App
+export default App;

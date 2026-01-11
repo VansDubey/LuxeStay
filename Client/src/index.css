@@ -1,11 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    @apply font-sans antialiased text-secondary-900 bg-secondary-50;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
 .primary{
-    @apply rounded-xl bg-pink-400 p-1 font-bold ;
+    @apply rounded-xl bg-primary-500 text-white p-2 font-bold shadow-lg shadow-primary-500/30 transition-all hover:bg-primary-600;
 }
 
 .flexbox{
     @apply flex justify-center items-center gap-2;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-secondary-300 rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-secondary-400;
 }

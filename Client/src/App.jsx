@@ -9,7 +9,6 @@ import { UserContextProvider } from './context/Usercontext';
 import Body from './pages/common/Body';
 import Login from './pages/common/Login';
 import Register from './pages/common/Register';
-// import LuxeStay from './pages/common/LuxeStay';
 
 // User Pages
 import Accounts from './pages/user/Accounts';
@@ -19,69 +18,75 @@ import PlacePage from './pages/user/PlacePage';
 import AllBooking from './pages/user/AllBooking';
 import SingleBooking from './pages/user/SingleBooking';
 
+// Admin Pages
+import AdminDashboard from './pages/admin/AdminDashboard';
+
 // Protected Route
-// import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedRoute from './components/ProtectedRoute';
 
 axios.defaults.withCredentials = true;
 
 // ✅ Define Routes
 const router = createBrowserRouter([
-  // 🌍 Common Routes
+  // 🌍 Common Routes (Public)
   { path: '/', element: <Body /> },
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
-  // { path: '/L', element: <LuxeStay /> },
+  { path: '/places/:id', element: <PlacePage /> }, // Publicly viewable details
 
-  // 👤 User Routes (Protected)
+  // 👤 User Routes (Protected: User & Admin can access profile/bookings)
   {
     path: '/accounts/profile',
     element: (
-      // <ProtectedRoute allowedRoles={['user']}>
+      <ProtectedRoute allowedRoles={['user', 'admin']}>
         <Accounts />
-      // </ProtectedRoute>
+      </ProtectedRoute>
     ),
   },
   {
     path: '/accounts/book',
     element: (
-      // <ProtectedRoute allowedRoles={['user']}>
+      <ProtectedRoute allowedRoles={['user', 'admin']}>
         <Booking />
-      /* </ProtectedRoute> */
-    ),
-  },
-  {
-    path: '/accounts/places/:ready?',
-    element: (
-      // <ProtectedRoute allowedRoles={['user']}>
-        <Places />
-      // </ProtectedRoute>
+      </ProtectedRoute>
     ),
   },
   {
     path: '/accounts/booking',
     element: (
-      // <ProtectedRoute allowedRoles={['user']}>
+      <ProtectedRoute allowedRoles={['user', 'admin']}>
         <AllBooking />
-      // </ProtectedRoute>
+      </ProtectedRoute>
     ),
   },
   {
     path: '/accounts/booking/:id',
     element: (
-      // <ProtectedRoute allowedRoles={['user']}>
+      <ProtectedRoute allowedRoles={['user', 'admin']}>
         <SingleBooking />
-      // </ProtectedRoute>
+      </ProtectedRoute>
+    ),
+  },
+
+  // 🛠️ Admin Routes (Protected: Admin Only)
+  {
+    path: '/admin/dashboard',
+    element: (
+      <ProtectedRoute allowedRoles={['admin']}>
+        <AdminDashboard />
+      </ProtectedRoute>
     ),
   },
   {
-    path: '/places/:id',
+    path: '/accounts/places/:ready?', // List & Add/Edit Form
     element: (
-    //   <ProtectedRoute allowedRoles={['user']}>
-        <PlacePage />
-      // </ProtectedRoute>
+      <ProtectedRoute allowedRoles={['admin']}>
+        <Places />
+      </ProtectedRoute>
     ),
   },
 ]);
+
 
 function App() {
   return (

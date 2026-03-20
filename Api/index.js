@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-require('dotenv').config()//.env folder is in the same folder so no need to add the option of path
+require('dotenv').config()
 const app = express()
 const User = require("./models/user.model");
 const bcrypt = require("bcryptjs");
@@ -11,6 +11,7 @@ const download = require('image-downloader');
 const multer = require('multer');
 const PlacesModel = require('./models/Places.model');
 const Booking = require('./models/booking.model');
+const { registerSchema, loginSchema, placeSchema, bookingSchema, validate } = require('./utility/validation');
 
 //(10,11)
 //useContext ko study krte raho in more better way.
@@ -58,9 +59,9 @@ function verifyRole(requiredRole) {
 
 app.use(cors({
   credentials: true,
-  origin: 'http://localhost:5173',
-  methods: ['GET', 'POST', 'OPTIONS', 'PUT'], // Allow necessary methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow necessary headers
+  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 app.use('/uploads', express.static('uploads'));
@@ -71,14 +72,10 @@ const port = 3000
 
 mongoose.connect(process.env.MONGODB_URL)
 
-app.post('/register', async (req, res) => {
+app.post('/register', validate(registerSchema), async (req, res) => {
   const { name, email, password, role } = req.body;
 
   try {
-    if (!name || !email || !password) {
-      return res.status(400).json({ error: "All fields are required" });
-    }
-
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: "User already exists" });
@@ -113,14 +110,10 @@ app.post('/register', async (req, res) => {
 });
 
 // 🟢 LOGIN ROUTE
-app.post('/login', async (req, res) => {
+app.post('/login', validate(loginSchema), async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    if (!email || !password) {
-      return res.status(400).json({ message: "Email and password required" });
-    }
-
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "User not registered yet" });
@@ -222,7 +215,7 @@ app.post('/upload', upload.single('image'), function (req, res, next) {
 })
 
 // PROTECT: Only admin can add places
-app.post('/places', verifyRole('admin'), (req, res) => {
+app.post('/places', verifyRole('admin'), validate(placeSchema), (req, res) => {
   const { title, address, description,
     checkIn, checkOut, perks, AddedPhotos, price } = req.body;
   const token = req.cookies.token;
@@ -261,7 +254,7 @@ app.get('/places/:id', async (req, res) => {
 })
 
 // PROTECT: Only admin can edit places
-app.put('/places', verifyRole('admin'), async (req, res) => {
+app.put('/places', verifyRole('admin'), validate(placeSchema), async (req, res) => {
 
 
   const { id, title, address, description,
@@ -288,7 +281,7 @@ app.get('/places', async (req, res) => {
   res.json(await PlacesModel.find())
 })
 
-app.post('/booking', async (req, res) => {
+app.post('/booking', validate(bookingSchema), async (req, res) => {
   try {
     const userData = await getUserDataFromToken(req);
     const { place, checkin, checkout, name, mobile, guests, price,

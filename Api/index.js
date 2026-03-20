@@ -20,7 +20,7 @@ const Booking = require('./models/booking.model');
 //2/To be done: Functionality of editing and deleting photos
 
 const bcryptsalt = bcrypt.genSaltSync(10);
-const jwtSecretKey = "ksdajgjhaegduqweyuiqyweijlskdlkdfjhj";
+const jwtSecretKey = process.env.JET_SECRET_KEY;
 
 function getUserDataFromToken(req) {
   return new Promise((resolve, reject) => {

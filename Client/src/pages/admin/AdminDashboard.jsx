@@ -3,6 +3,7 @@ import axios from 'axios';
 import { UserContext } from '../../context/Usercontext';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
+import API_ENDPOINTS from '../../config/api';
 import { Users, Home, Calendar, Briefcase, PlusCircle, TrendingUp } from 'lucide-react';
 import Button from '../../components/ui/Button';
 
@@ -23,8 +24,8 @@ const AdminDashboard = () => {
             try {
                 // These would ideally be real aggregation endpoints, but we'll fetch lists for now to simple count
                 // Note: This relies on the admin having access to view all places/bookings
-                const placesRes = await axios.get('http://localhost:3000/places');
-                const bookingsRes = await axios.get('http://localhost:3000/profilebooking'); // admin can see all bookings on this endpoint
+                const placesRes = await axios.get(API_ENDPOINTS.PLACES.LIST);
+                const bookingsRes = await axios.get(API_ENDPOINTS.BOOKINGS.GET_USER_BOOKINGS); // admin can see all bookings on this endpoint
 
                 // Mocking user count or assuming we might add an endpoint. 
                 // For now, let's just use placeholder or derived data if possible.

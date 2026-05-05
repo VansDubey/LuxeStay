@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import API_ENDPOINTS from "../../config/api";
 export const UserContext = createContext({})
 
 export function UserContextProvider({ children }) {
@@ -7,7 +8,7 @@ export function UserContextProvider({ children }) {
     const [ready, setready] = useState(false)
     useEffect(() => {
         if (!user) {
-            axios.get('http://localhost:3000/profile').then(({ data }) => {
+            axios.get(API_ENDPOINTS.AUTH.PROFILE).then(({ data }) => {
                 setuser(data);
                 setready(true);
             }).catch(() => {

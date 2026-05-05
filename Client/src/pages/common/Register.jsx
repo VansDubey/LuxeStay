@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
+import API_ENDPOINTS from '../../config/api';
 import { Globe } from 'lucide-react';
 
 const Register = () => {
@@ -9,20 +10,47 @@ const Register = () => {
   const [password, setpassword] = useState('');
   const [role, setrole] = useState('user');
   const [redirect, setredirect] = useState(false);
+  const [loading, setloading] = useState(false);
+  const [error, seterror] = useState('');
+  const [success, setsuccess] = useState('');
+  const [passwordStrength, setpasswordStrength] = useState(0);
+
+  // Calculate password strength
+  const calculatePasswordStrength = (pwd) => {
+    let strength = 0;
+    if (pwd.length >= 6) strength++;
+    if (pwd.length >= 10) strength++;
+    if (/[A-Z]/.test(pwd) && /[a-z]/.test(pwd)) strength++;
+    if (/[0-9]/.test(pwd)) strength++;
+    if (/[^A-Za-z0-9]/.test(pwd)) strength++;
+    return strength;
+  };
+
+  const handlePasswordChange = (e) => {
+    setpassword(e.target.value);
+    setpasswordStrength(calculatePasswordStrength(e.target.value));
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
+    seterror('');
+    setsuccess('');
+    setloading(true);
+    
     try {
-      await axios.post('http://localhost:3000/register', {
+      await axios.post(API_ENDPOINTS.AUTH.REGISTER, {
         name,
         email,
         password,
         role,
       });
-      alert('🎉 Registration successful! You can now log in.');
-      setredirect(true);
+      setsuccess('✅ Registration successful! Redirecting to login...');
+      setTimeout(() => setredirect(true), 500);
     } catch (error) {
-      alert('⚠️ Registration failed. Please try again later.');
+      const errorMsg = error.response?.data?.message || 'Registration failed. Please try again.';
+      seterror('✗ ' + errorMsg);
+    } finally {
+      setloading(false);
     }
   }
 
@@ -61,50 +89,86 @@ const Register = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Error Message */}
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm font-medium animate-pulse">
+                {error}
+              </div>
+            )}
+
+            {/* Success Message */}
+            {success && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm font-medium animate-pulse">
+                {success}
+              </div>
+            )}
+
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-1">Full Name</label>
+                <label className="block text-sm font-medium text-secondary-700 mb-2">Full Name <span className="text-red-500">*</span></label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setname(e.target.value)}
                   placeholder="e.g. John Doe"
-                  className="w-full px-4 py-3 rounded-xl border border-secondary-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-secondary-200 hover:border-secondary-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none bg-white/50 focus:bg-white"
                   required
+                  disabled={loading}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-1">Email address</label>
+                <label className="block text-sm font-medium text-secondary-700 mb-2">Email address <span className="text-red-500">*</span></label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setemail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full px-4 py-3 rounded-xl border border-secondary-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-secondary-200 hover:border-secondary-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none bg-white/50 focus:bg-white"
                   required
+                  disabled={loading}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-1">Password</label>
+                <label className="block text-sm font-medium text-secondary-700 mb-2">Password <span className="text-red-500">*</span></label>
                 <input
                   type="password"
                   value={password}
-                  onChange={(e) => setpassword(e.target.value)}
-                  placeholder="Create a password"
-                  className="w-full px-4 py-3 rounded-xl border border-secondary-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none"
+                  onChange={handlePasswordChange}
+                  placeholder="Create a strong password"
+                  className="w-full px-4 py-3 rounded-xl border border-secondary-200 hover:border-secondary-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none bg-white/50 focus:bg-white"
                   required
+                  disabled={loading}
                 />
+                {password && (
+                  <div className="mt-2 flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <div
+                        key={i}
+                        className={`h-1 flex-1 rounded-full transition-colors ${
+                          i < passwordStrength
+                            ? passwordStrength <= 2
+                              ? 'bg-red-500'
+                              : passwordStrength <= 4
+                              ? 'bg-yellow-500'
+                              : 'bg-green-500'
+                            : 'bg-secondary-200'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-1">I want to</label>
+                <label className="block text-sm font-medium text-secondary-700 mb-2">I want to</label>
                 <div className="relative">
                   <select
                     value={role}
                     onChange={(e) => setrole(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-secondary-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none appearance-none bg-white"
+                    className="w-full px-4 py-3 rounded-xl border border-secondary-200 hover:border-secondary-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none appearance-none bg-white/50 focus:bg-white"
+                    disabled={loading}
                   >
                     <option value="user">Book places (Traveler)</option>
                     <option value="admin">Host places (Admin/Host)</option>
@@ -118,9 +182,17 @@ const Register = () => {
 
             <button
               type="submit"
-              className="w-full py-3 bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-primary-500/30"
+              disabled={loading}
+              className="w-full py-3 bg-primary-500 hover:bg-primary-600 disabled:bg-secondary-400 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-primary-500/30 disabled:shadow-none disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              Create Account
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Creating account...
+                </>
+              ) : (
+                'Create Account'
+              )}
             </button>
           </form>
 

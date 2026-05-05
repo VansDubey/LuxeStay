@@ -1,102 +1,190 @@
-# React + Vite
+# LuxeStay - Frontend Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive React + Vite application for the LuxeStay luxury accommodations marketplace platform.
 
-Currently, two official plugins are available:
+## 🌟 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **User Authentication** - Secure login and registration with JWT tokens
+- **Property Listing** - Browse and discover luxury accommodations
+- **Booking Management** - Create and manage bookings with date selection
+- **Image Upload** - Upload property photos via link or file upload
+- **Admin Dashboard** - Host management and statistics
+- **Responsive Design** - Tailwind CSS for mobile-first responsive UI
+- **Role-Based Access** - Separate views for users and hosts/admins
+- **Protected Routes** - Secure pages with authentication checks
 
-Doubts:
-1. Should i create different models to make sure the data is imported in both collections differently
-2. Will import the things strating from login better configuration + useContext hook part later 
-3.Add the functionality of logout using cookie
+## 🛠️ Tech Stack
 
-todo:
-Implementing the photos wala option and implemneting it on the index page (here booking page)
+- **React 18** - UI framework
+- **Vite** - Lightning-fast build tool and dev server
+- **React Router v6** - Client-side routing
+- **Axios** - HTTP client for API calls
+- **Tailwind CSS** - Utility-first CSS framework
+- **Lucide React** - Beautiful, consistent icon library
+- **JavaScript (ES6+)** - Modern JavaScript
 
+## 📋 Prerequisites
 
-Booking page:
-putting css and making it like the square grid sort of
+- **Node.js** (v16.0.0 or higher)
+- **npm** or **yarn** package manager
+- **Backend API** running on `http://localhost:3000` (or configure via `.env`)
 
-indiviual place page:
-structure it
-add map
-Show more photo option 
-type = date
+## 🚀 Getting Started
 
-Editing is taking time
+### 1. Installation
 
+```bash
+cd Client
+npm install
+```
 
-//Owner ko database maj find out krne mai time lg rha hai.
+### 2. Environment Setup
 
-//correct perks ki dikkat
+Create `.env` from `.env.example`:
 
-//uploading the photos via refrencing from UploadPhotos.jsx to Places.jsx
+```bash
+cp .env.example .env
+```
 
-//Adding the token verifying the database and then updating the dataset to be done
+Configure for your environment:
 
-//setting mainphoto logic as on adding all photos must be [0] only, this functionality is not working
+```env
+VITE_API_URL=http://localhost:3000
+VITE_ENVIRONMENT=development
+VITE_APP_NAME=LuxeStay
+```
 
-//button=>ev.preventdefault
+### 3. Development Server
 
-//Deleting page functionality is not completed as it is not deleting photos from the database
+```bash
+npm run dev
+```
 
-//adding price per night and ratings on the homepage
+Visit `http://localhost:5173`
 
-//Google map use in address section
+### 4. Build for Production
 
-//Bg-black in the showmorephoto page 
+```bash
+npm run build
+npm run preview
+```
 
-//  Single PlacePage=>
-// <input type="date"> for checkin nad checkout
-//<input type="number"> for number of guests
-//making of BookingWidget.jsx
+## 📁 Project Structure
 
-//places in allbookings using populate function
+```
+Client/
+├── src/
+│   ├── config/api.js              # Centralized API endpoints
+│   ├── components/                # Reusable components
+│   ├── context/                   # Context API (User auth)
+│   ├── pages/                     # Page components
+│   ├── App.jsx                    # Main app with routing
+│   └── index.css                  # Global styles
+├── .env.example                   # Environment template
+├── .env                           # Local environment (git ignored)
+├── package.json
+├── vite.config.js
+├── tailwind.config.js
+└── README.md
+```
 
-//Just make all the required cahnges and then watch the video from 6:45 till end for the last one changes that it
+## 🔌 API Endpoints Configuration
 
-//Setredirect to bookings page
+All API calls use centralized config from `src/config/api.js`:
 
-1. On refreshing the page the useState are again set to empty array to retain them either save the data in localstorage or in the backend
-2. .filter() creates a new array and all the items satisfying the condition gets added in the new array
+```javascript
+import API_ENDPOINTS from '../../config/api';
 
-3. <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-✅ grid:
+// Examples:
+axios.get(API_ENDPOINTS.AUTH.PROFILE)
+axios.post(API_ENDPOINTS.BOOKINGS.CREATE, data)
+axios.get(API_ENDPOINTS.PLACES.GET_BY_ID(id))
+```
 
-Turns the container into a CSS Grid. It allows items inside to align in rows and columns automatically.
-✅ grid-cols-1:
+The base URL is configured via `VITE_API_URL` environment variable.
 
-Sets 1 column by default (on mobile or smaller screens).
-grid-cols-1 means 1 item per row.
-✅ md:grid-cols-2:
+## 🔐 Authentication
 
-On medium screens (from 768px and above), the grid switches to 2 columns.
-md: is a responsive breakpoint for medium screens in Tailwind.
-✅ lg:grid-cols-3:
+- JWT tokens stored in HTTP-only cookies
+- Secure by default with `httpOnly: true`
+- Automatic credential passing to API
+- Role-based access control (user/admin)
 
-On large screens (from 1024px and above), the grid switches to 3 columns.
-✅ gap-4:
+## 📦 Scripts
 
-Adds spacing between grid items.
-gap-4 means a gap of 1rem (16px) between each item.
-✨ How does it work?
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Development server (port 5173) |
+| `npm run build` | Production build to `dist/` |
+| `npm run preview` | Preview production build |
+| `npm run lint` | Run ESLint |
 
-On mobile → 1 item per row.
-On tablet → 2 items per row.
-On desktop → 3 items per row.
+## 🚢 Deployment
 
-4.
-grid: Turns the container into a grid.
+### Vercel (Recommended)
+1. Push to GitHub
+2. Import repo in Vercel
+3. Set environment variables
+4. Deploy
 
-grid-cols-{n}: Sets n equal-width columns.
+### Netlify
+1. Connect GitHub repo
+2. Build: `npm run build`
+3. Publish: `dist`
+4. Set environment variables
+5. Deploy
 
-Example: grid-cols-3 → 3 equal columns.
-grid-cols-[value]: Custom column sizes.
+### Self-Hosted
+1. Build: `npm run build`
+2. Upload `dist/` folder
+3. Configure web server for SPA routing
+4. Set env variables
 
-Example: grid-cols-[2fr_1fr] → First column is twice as wide as the second.
-grid-rows-{n}: Sets n equal-height rows.
+### Pre-Deployment
+
+- [ ] Update `VITE_API_URL` to production API
+- [ ] Set `VITE_ENVIRONMENT=production`
+- [ ] Test build: `npm run build`
+- [ ] Verify `.env` in `.gitignore`
+- [ ] Test on production URL
+
+## 🔄 Environment Variables
+
+### Development
+```env
+VITE_API_URL=http://localhost:3000
+VITE_ENVIRONMENT=development
+VITE_APP_NAME=LuxeStay
+```
+
+### Production
+```env
+VITE_API_URL=https://api.yourdomain.com
+VITE_ENVIRONMENT=production
+VITE_APP_NAME=LuxeStay
+```
+
+⚠️ Never expose sensitive API keys!
+
+## 🐛 Troubleshooting
+
+**Port in use:** `npx kill-port 5173`
+
+**API errors:** Check CORS headers and `VITE_API_URL` setting
+
+**Build fails:** `rm -rf node_modules && npm install && npm run build`
+
+## 📚 Resources
+
+- [React Docs](https://react.dev)
+- [Vite Docs](https://vitejs.dev)
+- [Tailwind CSS](https://tailwindcss.com)
+- [React Router](https://reactrouter.com)
+
+## 📝 License
+
+Part of LuxeStay application.
+
 
 Example: grid-rows-2 → 2 equal rows.
 grid-rows-[value]: Custom row sizes.

@@ -1,4 +1,6 @@
 import React from "react";
+import { Star } from "lucide-react";
+
 //Reviews
 const reviews = [
   {
@@ -40,36 +42,43 @@ const reviews = [
 
 const MidSec = () => {
   return (
-    <section className="py-16 bg-gray-100">
-      <div className="container mx-auto px-4 text-center">
-        <h2 className="text-3xl font-bold mb-6">What Our Guests Say</h2>
-        <p className="text-gray-600 mb-10">Real reviews from our happy guests</p>
+    <section className="max-w-7xl mx-auto px-6 md:px-10">
+      <div className="text-center mb-12">
+        <h2 className="text-3xl md:text-4xl font-serif font-bold text-secondary-900 mb-3">What Our Guests Say</h2>
+        <p className="text-secondary-500 text-base md:text-lg max-w-2xl mx-auto">Real reviews from our happy guests who've experienced luxury stays</p>
+      </div>
 
-        <div className="flex flex-wrap justify-center gap-6">
-          {reviews.map((review) => (
-            <div key={review.id} className="max-w-sm p-4 shadow-lg bg-white rounded-lg">
-              <div className="flex items-center gap-4 mb-4">
-                <img
-                  src={review.image}
-                  alt={review.name}
-                  width={50}
-                  height={50}
-                  className="rounded-full"
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        {reviews.map((review) => (
+          <div key={review.id} className="bg-white p-6 md:p-8 rounded-2xl shadow-sm hover:shadow-lg border border-secondary-100 transition-shadow duration-300">
+            {/* Stars */}
+            <div className="flex gap-1 mb-4">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  size={16}
+                  className={i < review.rating ? "fill-amber-400 text-amber-400" : "text-secondary-300"}
                 />
-                <div>
-                  <h3 className="font-semibold">{review.name}</h3>
-                  <div className="flex items-center text-yellow-500">
-                    {[...Array(review.rating)].map((_, i) => (
-                      <span key={i}>⭐</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <p className="text-gray-700">{review.review}</p>
+              ))}
             </div>
-          ))}
-        </div>
-
+            
+            {/* Review Text */}
+            <p className="text-secondary-700 text-sm md:text-base mb-6 leading-relaxed italic">"{review.review}"</p>
+            
+            {/* Author */}
+            <div className="flex items-center gap-3 pt-6 border-t border-secondary-100">
+              <img
+                src={review.image}
+                alt={review.name}
+                className="w-12 h-12 rounded-full object-cover"
+              />
+              <div>
+                <h3 className="font-semibold text-secondary-900 text-sm">{review.name}</h3>
+                <p className="text-xs text-secondary-500">Verified Guest</p>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );

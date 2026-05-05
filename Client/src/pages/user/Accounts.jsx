@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { UserContext } from '../../context/Usercontext';
+import API_ENDPOINTS from '../../config/api';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import Button from '../../components/ui/Button';
@@ -25,10 +26,10 @@ const Accounts = () => {
   useEffect(() => {
     // User Data Fetch
     if (user && user.role !== 'admin') {
-      axios.get('http://localhost:3000/profilebooking').then(response => {
+      axios.get(API_ENDPOINTS.BOOKINGS.GET_USER_BOOKINGS).then(response => {
         setBookings(response.data);
       });
-      axios.get('http://localhost:3000/user-places').then(response => {
+      axios.get(API_ENDPOINTS.PLACES.USER_PLACES).then(response => {
         setPlaces(response.data);
       });
     }
@@ -38,8 +39,8 @@ const Accounts = () => {
       const fetchStats = async () => {
         setLoadingStats(true);
         try {
-          const placesRes = await axios.get('http://localhost:3000/places');
-          const bookingsRes = await axios.get('http://localhost:3000/profilebooking'); // admin endpoint assumption
+          const placesRes = await axios.get(API_ENDPOINTS.PLACES.LIST);
+          const bookingsRes = await axios.get(API_ENDPOINTS.BOOKINGS.GET_USER_BOOKINGS); // admin endpoint assumption
           const placesData = placesRes.data;
           const bookingsData = bookingsRes.data;
 
@@ -60,7 +61,7 @@ const Accounts = () => {
   }, [user]); // Re-run if user changes (e.g. login)
 
   async function logout() {
-    await axios.post('http://localhost:3000/logout');
+    await axios.post(API_ENDPOINTS.AUTH.LOGOUT);
     setUser(null);
     setRedirect('/');
   }

@@ -4,6 +4,7 @@ import axios from 'axios';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import Button from '../../components/ui/Button';
+import API_ENDPOINTS from '../../config/api';
 import { Calendar, Users, MapPin, CreditCard, ChevronLeft, CheckCircle, Star } from 'lucide-react';
 
 const SingleBooking = () => {
@@ -15,7 +16,7 @@ const SingleBooking = () => {
 
   useEffect(() => {
     if (id) {
-      axios.get('http://localhost:3000/booking').then(response => {
+      axios.get(API_ENDPOINTS.BOOKINGS.CREATE).then(response => {
         const foundBooking = response.data.find((b) => b._id === id);
         setBooking(foundBooking);
 

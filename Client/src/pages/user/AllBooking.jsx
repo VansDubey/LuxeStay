@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Navigate, Link } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
+import API_ENDPOINTS from '../../config/api';
 import { Calendar, Users, Briefcase, CreditCard, ChevronRight, User, Phone } from 'lucide-react';
 import { UserContext } from '../../context/Usercontext';
 
@@ -12,7 +13,7 @@ const AllBooking = () => {
   const { user } = useContext(UserContext);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/booking').then(response => {
+    axios.get(API_ENDPOINTS.BOOKINGS.CREATE).then(response => {
       setBookings(response.data);
     })
   }, [])

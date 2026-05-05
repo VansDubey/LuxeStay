@@ -10,11 +10,16 @@ const placeSchema = new Schema({
     address:String,
     photos:[String],
     description:String,
-    Perks:[String],
+    perks:[String],
     checkIn:Number,
     checkOut:Number,
     maxGuests:Number,
-    price:Number
-})
+    price:Number,
+    availability:Boolean,
+    reviews:[{
+        type:Schema.Types.ObjectId,
+        ref:"Review"
+    }]
+}, { timestamps: true })
 
 module.exports = mongoose.model("Place", placeSchema);

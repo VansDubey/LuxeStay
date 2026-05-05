@@ -56,7 +56,6 @@ function verifyRole(requiredRole) {
   };
 }
 
-
 app.use(cors({
   credentials: true,
   origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
@@ -68,7 +67,7 @@ app.use('/uploads', express.static('uploads'));
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.static(__dirname)) // The current directory in which your images are saved , to access them http//localhost:3000/directoryname/imagename (if the images are in api directory then the directory is / bydeafult)
-const port = 3000
+const port = process.env.API_PORT || 3000
 
 mongoose.connect(process.env.MONGODB_URL)
 
@@ -138,7 +137,8 @@ app.post('/login', validate(loginSchema), async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false, // change to true in production (HTTPS)
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
     }).json({
       message: "Login successful",
       user: {
@@ -211,7 +211,8 @@ const upload = multer({ storage: storage })
 
 app.post('/upload', upload.single('image'), function (req, res, next) {
   const url = `/uploads/${req.file.filename}`
-  res.json({ imageurl: `http://localhost:3000/${url}` })
+  const baseUrl = process.env.API_BASE_URL || 'http://localhost:3000';
+  res.json({ imageurl: `${baseUrl}${url}` })
 })
 
 // PROTECT: Only admin can add places

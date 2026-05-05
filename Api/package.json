@@ -1,4 +1,12 @@
 {
+  "name": "luxestay-api",
+  "version": "1.0.0",
+  "description": "LuxeStay API Server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.41.3",

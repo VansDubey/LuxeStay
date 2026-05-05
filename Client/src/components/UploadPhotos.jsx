@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 import { MdDownloading } from "react-icons/md";
 import axios from 'axios'
+import API_ENDPOINTS from '../config/api'
 
 
 const UploadPhotos = () => {
@@ -12,7 +13,7 @@ const UploadPhotos = () => {
 
     function addPhotoByLink(ev){
         ev.preventDefault();
-        const promise = axios.post('http://localhost:3000/upload-by-link',{link:link})
+        const promise = axios.post(API_ENDPOINTS.UPLOADS.UPLOAD_BY_LINK,{link:link})
         promise.then(res=>{
             const data = res.data;
             console.log({data});
@@ -33,7 +34,7 @@ const UploadPhotos = () => {
         console.log(...formData);
 
       try {
-        const response = await axios.post('http://localhost:3000/upload', formData, {
+        const response = await axios.post(API_ENDPOINTS.UPLOADS.UPLOAD_FILE, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }

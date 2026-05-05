@@ -4,6 +4,7 @@ import axios from 'axios';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import Button from '../../components/ui/Button';
+import API_ENDPOINTS from '../../config/api';
 import {
   Wifi, Coffee, Droplets /* Pool */, Dumbbell,
   Dog, Car, MapPin, Star, Share, Heart, Grid, X, ChevronLeft
@@ -24,7 +25,7 @@ const PlacePage = () => {
 
   useEffect(() => {
     if (!id) return;
-    axios.get(`http://localhost:3000/places/${id}`).then(response => {
+    axios.get(API_ENDPOINTS.PLACES.GET_BY_ID(id)).then(response => {
       setPlace(response.data);
     });
   }, [id]);
@@ -55,7 +56,7 @@ const PlacePage = () => {
         name,
         mobile
       };
-      const response = await axios.post('http://localhost:3000/booking', data);
+      const response = await axios.post(API_ENDPOINTS.BOOKINGS.CREATE, data);
       alert(`Booking confirmed! Total: $${calculateTotal()}`);
       setRedirect(`/accounts/booking/${response.data._id}`);
     } catch (error) {

@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { UserContext } from '../../context/Usercontext';
+import API_ENDPOINTS from '../../config/api';
 import { Globe } from 'lucide-react';
 
 const Login = () => {
@@ -9,21 +10,31 @@ const Login = () => {
   const [password, setpassword] = useState('');
   const [role, setrole] = useState('user');
   const [redirect, setredirect] = useState(false);
+  const [loading, setloading] = useState(false);
+  const [error, seterror] = useState('');
+  const [success, setsuccess] = useState('');
   const { setuser } = useContext(UserContext);
 
   async function handleSubmit(e) {
     e.preventDefault();
+    seterror('');
+    setsuccess('');
+    setloading(true);
+    
     try {
-      const response = await axios.post('http://localhost:3000/login', {
+      const response = await axios.post(API_ENDPOINTS.AUTH.LOGIN, {
         email,
         password,
-        role,
       });
       setuser(response.data);
-      // alert('✅ Login successful!');
-      setredirect(true);
+      setsuccess('✓ Login successful! Redirecting...');
+      setTimeout(() => setredirect(true), 500);
     } catch (e) {
-      alert('❌ Login failed. Please check your credentials.');
+      const errorData = e.response?.data;
+      const errorMsg = errorData?.errors?.join(' ') || errorData?.message || 'Login failed. Please check your credentials.';
+      seterror('✗ ' + errorMsg);
+    } finally {
+      setloading(false);
     }
   }
 
@@ -62,38 +73,55 @@ const Login = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Error Message */}
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm font-medium animate-pulse">
+                {error}
+              </div>
+            )}
+
+            {/* Success Message */}
+            {success && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm font-medium animate-pulse">
+                {success}
+              </div>
+            )}
+
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-1">Email address</label>
+                <label className="block text-sm font-medium text-secondary-700 mb-2">Email address <span className="text-red-500">*</span></label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setemail(e.target.value)}
                   placeholder="Enter your email"
-                  className="w-full px-4 py-3 rounded-xl border border-secondary-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-secondary-200 hover:border-secondary-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none bg-white/50 focus:bg-white"
                   required
+                  disabled={loading}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-1">Password</label>
+                <label className="block text-sm font-medium text-secondary-700 mb-2">Password <span className="text-red-500">*</span></label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setpassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full px-4 py-3 rounded-xl border border-secondary-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-secondary-200 hover:border-secondary-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none bg-white/50 focus:bg-white"
                   required
+                  disabled={loading}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-secondary-700 mb-1">Account Type</label>
+                <label className="block text-sm font-medium text-secondary-700 mb-2">Account Type</label>
                 <div className="relative">
                   <select
                     value={role}
                     onChange={(e) => setrole(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-secondary-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none appearance-none bg-white"
+                    className="w-full px-4 py-3 rounded-xl border border-secondary-200 hover:border-secondary-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all outline-none appearance-none bg-white/50 focus:bg-white"
+                    disabled={loading}
                   >
                     <option value="user">Traveler (User)</option>
                     <option value="admin">Host (Admin)</option>
@@ -105,21 +133,27 @@ const Login = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between text-sm">
               <div className="flex items-center">
-                <input id="remember-me" type="checkbox" className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded" />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-secondary-600">Remember for 30 days</label>
+                <input id="remember-me" type="checkbox" className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-secondary-300 rounded" disabled={loading} />
+                <label htmlFor="remember-me" className="ml-2 text-secondary-600">Remember for 30 days</label>
               </div>
-              <div className="text-sm">
-                <a href="#" className="font-medium text-primary-600 hover:text-primary-500">Forgot password?</a>
-              </div>
+              <a href="#" className="font-medium text-primary-600 hover:text-primary-500 transition-colors">Forgot password?</a>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-primary-500/30"
+              disabled={loading}
+              className="w-full py-3 bg-primary-500 hover:bg-primary-600 disabled:bg-secondary-400 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-primary-500/30 disabled:shadow-none disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              Sign in
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Signing in...
+                </>
+              ) : (
+                'Sign in'
+              )}
             </button>
           </form>
 

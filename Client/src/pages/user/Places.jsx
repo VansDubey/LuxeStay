@@ -5,6 +5,7 @@ import { UserContext } from '../../context/Usercontext';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import Button from '../../components/ui/Button';
+import API_ENDPOINTS from '../../config/api';
 import { Plus, Trash2, Star, Upload, Image as ImageIcon, ArrowLeft, Loader } from 'lucide-react';
 
 const Places = () => {
@@ -52,7 +53,7 @@ const Places = () => {
   // For this refactor, I will support the existing flow.
 
   useEffect(() => {
-    axios.get('http://localhost:3000/user-places').then(({ data }) => {
+    axios.get(API_ENDPOINTS.PLACES.USER_PLACES).then(({ data }) => {
       setPlaces(data);
     });
   }, []);
@@ -81,9 +82,9 @@ const Places = () => {
 
     // Assuming fetch logic for edit vs create
     if (params.id) { // if we had an ID
-      await axios.put('http://localhost:3000/places', { id: params.id, ...placeData });
+      await axios.put(API_ENDPOINTS.PLACES.UPDATE, { id: params.id, ...placeData });
     } else {
-      await axios.post('http://localhost:3000/places', placeData);
+      await axios.post(API_ENDPOINTS.PLACES.CREATE, placeData);
     }
     setRedirect('/accounts/places');
   }
@@ -91,7 +92,7 @@ const Places = () => {
   async function addPhotoByLink(ev) {
     ev.preventDefault();
     try {
-      const { data: filename } = await axios.post('http://localhost:3000/upload-by-link', { link: photoLink });
+      const { data: filename } = await axios.post(API_ENDPOINTS.UPLOADS.UPLOAD_BY_LINK, { link: photoLink });
       setAddedPhotos(prev => [...prev, photoLink]); // The server seems to return filename but original code pushed link? 
       // Original code: setAddedPhotos... [...prev, link]
       setPhotoLink('');
@@ -104,7 +105,7 @@ const Places = () => {
     for (let i = 0; i < files.length; i++) {
       data.append('image', files[i]);
     }
-    axios.post('http://localhost:3000/upload', data, {
+    axios.post(API_ENDPOINTS.UPLOADS.UPLOAD_FILE, data, {
       headers: { 'Content-Type': 'multipart/form-data' }
     }).then(response => {
       const { imageurl } = response.data; // Original code used imageurl

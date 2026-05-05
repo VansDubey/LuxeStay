@@ -10,13 +10,13 @@ const bookingSchema = new Schema({
         type:Schema.Types.ObjectId,
         ref:"User"
     },
-    checkin:String,
-    checkout:String,
+    checkin:{ type: Date, required: true },
+    checkout:{ type: Date, required: true },
     guests:Number,
     name:String,
-    mobile:Number,
-    price:Number
-   
+    mobile:{ type: String, required: true },
+    price:Number,
+    createdAt:{ type: Date, default: Date.now }
 })
 
 module.exports = mongoose.model("Booking", bookingSchema);
